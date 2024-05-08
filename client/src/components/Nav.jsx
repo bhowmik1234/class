@@ -1,31 +1,32 @@
 import React from 'react';
+import { Link } from "react-router-dom";
 
 const Nav = () => {
   return (
     <ul className="nav-links">
       <li>
-        <a href="#">
+        <Link to="/">
           <i className="fas fa-home" />
           <span className="navlink">Home</span>
-        </a>
+        </Link>
       </li>
       <li>
-        <a href="#">
+        <Link to="/">
           <i className="fas fa-calendar-check" />
           <span className="navlink">To-do</span>
-        </a>
+        </Link>
       </li>
       <li>
-        <a href="#">
+        <Link to="/profile">
           <i className="fas fa-graduation-cap" />
           <span className="navlink">All Project</span>
-        </a>
+        </Link>
       </li>
       <li>
-        <a href="#">
+        <Link href="/">
           <i className="fas fa-cog" />
           <span className="navlink">Settings</span>
-        </a>
+        </Link>
       </li>
     </ul>
   );

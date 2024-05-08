@@ -13,7 +13,7 @@ import axios from "axios";
 const Profile = () => {
 
   const [edit, setEdit] = useState(false);
-  const editRef = useRef(false); // Use a ref to store edit state
+  const editRef = useRef(false); 
   const [user, setUser] = useState("");
   const [dob, setDob] = useState("");
   const [gender,setGender] = useState("");
@@ -27,13 +27,15 @@ const Profile = () => {
   const url = process.env.REACT_APP_BACKEND_URL;
   
 //   onChange = {(e) => {(e.target.value)}}
+  
 
-
-  useEffect(()=>{
-    setUser(Cookies.get("loggedIn"));
-    const details = async ()=>{
+useEffect(()=>{
+  const details = async ()=>{
+      const a = Cookies.get("loggedIn");
+      setUser(a);
+      console.log(user);
         try {
-            const res = await axios.post(`${url}/get-contact`, {user: "bisu"});
+            const res = await axios.post(`${url}/get-contact`, {user:a});
             console.log(res);
             setDob(res.data.dob);
             setGender(res.data.gender);
@@ -50,8 +52,8 @@ const Profile = () => {
         }
     }
     details();
-  },[ dob, gender, profession, mobile, email, LinkedIn, github, codechef, x])
-
+  },[ ])
+  // dob, gender, profession, mobile, email, LinkedIn, github, codechef, x
   const Edit = () => {
     setEdit(!editRef.current);
     editRef.current = !editRef.current;
@@ -73,7 +75,7 @@ const Profile = () => {
             github,
             codechef,
             X:x,
-            user: "bisu"
+            user
         };
         try {
             const res = await axios.post(`${url}/contact`, data);
@@ -109,8 +111,8 @@ const Profile = () => {
                           <img src={img} alt="imgloc" className="h-[270px] w-[300px] mt-8 mb-5 py-4 bg-white rounded-lg" />
                         </div>
                         {/* basic details in profile section like name dob collage name */}
-                        <div className="item-center bg-white rounded-lg  bg-emerald-700 py-4">
-                          <h2 className="text-2xl w-full mb-7 bg-emerald-600 py-4 px-16">{user}</h2>
+                        <div className="item-center bg-white rounded-lg  bg-emerald-800 py-4">
+                          <h2 className="text-2xl w-full mb-7 bg-emerald-700 py-4 px-16">{user}</h2>
                           <div>
 
                             <div className=" text-1xl ml-[35px] mb-3 border-b border-neutral-400 outline-none justify-between  flex w-5/6" >
@@ -200,7 +202,7 @@ const Profile = () => {
             <div className="w-2/5 bg-white text-center py-3 bg-amber-50 rounded-lg">
               <div className="text-lg border-b my-6 ml-8 border-neutral-400 justify-between flex w-4/5">
                 <label htmlFor="name" className="">Name  </label>
-                <input  type="text" value="Praveen" readOnly className=" hover:bg-slate-200 w-3/5 bg-slate-200 ml-8 outline-none"/>
+                <input  type="text" value={user} readOnly className=" hover:bg-slate-200 w-3/5 bg-slate-200 ml-8 outline-none"/>
               </div>
 
               <div className="text-lg border-b my-6 ml-8 border-neutral-400 justify-between flex w-4/5">
@@ -210,7 +212,7 @@ const Profile = () => {
 
               <div className="text-lg border-b my-6 ml-8 border-neutral-400 justify-between flex w-4/5">
                 <label htmlFor="Gender" className="">Gender </label>
-                <input onChange = {(e) => {setGender(e.target.value)}} type="radio" name="female" value="female " className="ml-28 rounded-s py-1 hover:bg-slate-200 bg-slate-200 outline-none"/>
+                <input onChange = {(e) => {setGender(e.target.value)}} type="radio" name="male" value="male " className="ml-28 rounded-s py-1 hover:bg-slate-200 bg-slate-200 outline-none"/>
                 <label for="male">Male</label><br/>
                 <input onChange = {(e) => {setGender(e.target.value)}} type="radio" name="female" value="female"  className="rounded-s py-1 hover:bg-slate-200 bg-slate-200 outline-none"/>
                 <label for="female">Female</label><br/>

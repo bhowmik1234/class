@@ -31,7 +31,7 @@ app.post('/user-login', async(req, res)=>{
         {
             res.json("user not found");
         }
-        res.json("user found.");    
+        res.json(user);    
     } catch (error) {
         console.log(error);
     }
@@ -51,7 +51,17 @@ app.post('/user-register', async(req, res)=>{
     const hashedPassword = bcrypt.hashSync(password, salt);
     console.log(hashedPassword);
 
-    const contact = new Contact({});
+    const contact = new Contact({
+        dob:"", 
+        gender:"", 
+        profession:"", 
+        mobile:"", 
+        email:"", 
+        LinkedIn:"", 
+        github:"", 
+        codechef:"", 
+        X:"",
+    });
     const cid = await contact.save();
     
     const newUser = new User({
@@ -75,7 +85,7 @@ app.post('/create-project', async(req, res)=>{
         const nanoid = customAlphabet('1234567890abcdef', 8)
         let code = nanoid();
 
-        const currUser = await User.findOne({username: "bhowmik"});
+        const currUser = await User.findOne({username: user});
         console.log(currUser._id);
 
         console.log(name, desp, type);
@@ -84,7 +94,7 @@ app.post('/create-project', async(req, res)=>{
             description: desp,
             projectType: type,
             code,
-            admin: "bhowmik",
+            admin: user
         });
 
         const saveProject = await newProject.save();
@@ -132,7 +142,8 @@ app.post('/contact', async(req, res)=>{
 app.post('/get-contact', async(req, res)=>{
     try {
         const reqBody = req.body;
-        const user  = "bisu";
+        console.log(reqBody);
+        const {user}  = reqBody;
         const det = await User.findOne({username: user});
         console.log(det);
         const cid = await Contact.findOne({_id: det.details});
@@ -144,35 +155,7 @@ app.post('/get-contact', async(req, res)=>{
     }
 })
 
-// app.post('/create-classroom', async(req, res)=>{
-//     try {
-//         const reqBody = req.body;
-//         const { subject, section, facultyId } = reqBody;
-//         const nanoid = customAlphabet('1234567890abcdef', 8)
-//         let code = nanoid();
 
-//         const newClass = new Classroom({
-//             subject,
-//             section, 
-//             code,
-//         });
-
-//         const savedClass = await newClass.save();
-//         console.log(savedClass);
-//         // const faculty = await Faculty.updateOne({_id:facultyId}, {$push:{classroomCode:code}});
-//         // console.log(faculty);
-//         res.json("class created successfully.");
-        
-//     } catch (error) {
-//         console.log(error);
-//         res.json("could not create class.");
-//     }
-// })
-
-// // add data
-// app.post('/classroom-data', async(req, res)=>{
-//     res.send("data add.");
-// })
 
 
 app.listen(process.env.PORT, ()=>{

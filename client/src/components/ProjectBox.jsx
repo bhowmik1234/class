@@ -57,7 +57,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 import axios from "axios";
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
 
 const ProjectBox = () => {
     const url = process.env.REACT_APP_BACKEND_URL;
@@ -81,7 +81,7 @@ const ProjectBox = () => {
         <div>
             {/* <div className="content" style={{ display: "flex" }}> */}
                 {boxData.map((elem, index) => (
-                    <Link to={`/${elem.name}`} key={index}> {/* Wrap Link around each project box */}
+                    <Link to={`/project/${elem.name}`} key={index}> {/* Wrap Link around each project box */}
                         <div className="bg-neutral-600 w-56 h-[250px] m-5 rounded-lg p-4 flex flex-col justify-between">
                             <div className="mb-6 text-2xl border-b-2 border-black flex justify-center">{elem.name}</div>
                             <div>

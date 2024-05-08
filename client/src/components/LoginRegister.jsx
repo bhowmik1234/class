@@ -107,10 +107,11 @@ export const LoginRegister = () => {
   const login = async() =>{
     try {
       const res = await axios.post(`${url}/user-login`, {email: lemail, password:lpass1});
+      console.log("user");
       console.log(res);
-      setUsername(prevUsername => res.data.username);
-      console.log(res.data.username);
-      Cookies.set('loggedIn', "bhowmik", { expires: 1 });
+      const uname = await res.data.username;
+      console.log(uname);
+      Cookies.set('loggedIn', uname, { expires: 1 });
       setIsLoggedIn(true);
     } catch (error) {
       console.log(error);
@@ -169,7 +170,7 @@ export const LoginRegister = () => {
               </div>
               <a href="#" className="forget_password">Forget Password</a>
             </div>
-            <Link to={`/`}>
+            <Link to={`/project`}>
             <button onClick={login} type="submit" className="loginButton">Sign in</button>
             </Link>
 

@@ -15,6 +15,7 @@ const Home = () => {
   const [showPlus, setShowPlus] = useState(false);
   const [showCreateClass, setShowCreateClass] = useState(false);
   const [showJoinClass, setShowJoinClass] = useState(false);
+  const [projectcode , setProjectCode] = useState("");
   const [boxData, setBoxData] = useState([{
     "name":"school",
     "description": "nice word",
@@ -62,12 +63,13 @@ const [ptype, setType] = useState("");
   };
 
   const toggleCreateClass = () => {
-  
+    setShowPlus(false);
     setShowCreateClass(!showCreateClass);
   };
 
   const toggleJoinClass = () => {
     setShowJoinClass(!showJoinClass);
+    setShowPlus(false);
     // setShowPlus(!showPlus);
     console.log(Cookies.get("loggedIn"));
   };
@@ -78,11 +80,13 @@ const [ptype, setType] = useState("");
 
   const createProject = async () => {
     try {
+      const a = Cookies.get('loggedIn');
+      console.log(a);
       const data = {
         name: name,
         desp: desp,
         type: ptype,
-        user: Cookies.get("loggedIn"),
+        user: a,
       }
       const res = await axios.post(`${url}/create-project`, data);
       console.log(res);
@@ -95,39 +99,44 @@ const [ptype, setType] = useState("");
     }
   };
 
+  const joinproject = async() =>{
+    console.log(projectcode);
+    setShowJoinClass(!showJoinClass);
+  };
+
   return (
 <>
       <div className="page">
         {/* side bar content */}
         <div className={`sidebar ${isSidebarOpen ? '' : 'close'}`}>
           <div className="logo-details">
-            <i className="bx bxl-c-plus-plus" />
+          <i class='bx bx-notepad'></i>
             <span className="logo_name">TeachHive</span>
           </div>
           <ul className="nav-links">
             <li>
-              <a href="#">
+              <Link to="#">
                 <i className="fas fa-home" />
                 <span className="navlink">Home</span>
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#">
+              <Link to="#">
                 <i className="fas fa-calendar-check" />
                 <span className="navlink">To-do</span>
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#">
+              <Link to="/project">
                 <i className="fas fa-graduation-cap" />
                 <span className="navlink">All Project</span>
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#">
+              <Link to="#">
                 <i className="fas fa-cog" />
                 <span className="navlink">Settings</span>
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
@@ -148,8 +157,9 @@ const [ptype, setType] = useState("");
                 <Link to="/profile">
                   <div id="user-btn" className="fas fa-user" />
                 </Link>
-
-                <div id="toggle-btn" style={{ marginRight: "1rem" }} className="fas fa-moon " />
+                <Link to="/loginRegister">
+                <div id="toggle-btn" style={{ marginRight: "1rem" }} onClick={logout} className="bx bx-log-out-circle font-bold"> </div>
+                </Link>
               </div>
               {/* <div className={`profile ${showProfile ? 'active' : ''}`}>
                 <img src="profile.jpeg" alt="" />
@@ -172,9 +182,9 @@ const [ptype, setType] = useState("");
           {/* home sub Routes */}
           <div className=" flex w-full" >
             <Routes>
-                <Route path="/" element={<ProjectBox />} />
+                <Route path="/project" element={<ProjectBox />} />
                 <Route path="/header" element={<Header />} />
-                <Route path="/*" element={<Work />} />
+                <Route path="/project/*" element={<Work />} />
                 <Route path="/profile" element={<Profile />} />
             </Routes>
           </div>
@@ -193,11 +203,12 @@ const [ptype, setType] = useState("");
               placeholder="Project code"
               id="projectcode"
               required=""
+              onChange={(e)=>setProjectCode(e.target.value)}
             />
             <br />
             <div className="joinbtn">
               <button id="jcancel-btn" onClick={toggleJoinClass}>cancel</button>
-              <button id="join-btn">join</button>
+              <button id="join-btn" onClick={joinproject}>join</button>
             </div>
           </div>
         </div>
