@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ProjectBox from './ProjectBox';
 import Work from "./Work";
 import Profile from "./Profile";
+import Todo from "./Todo";
 
 
 const Home = () => {
@@ -93,7 +94,7 @@ const [ptype, setType] = useState("");
       console.log(name, desp, ptype, Cookies.get("loggedIn"));
       // If creation is successful, close the modal and update boxDat
       setShowCreateClass(false);
-      setBoxData(prevData => [...prevData, {"name": name, "admin": "bhowmik", "desp": desp, "projectType":ptype}]);
+      setBoxData(prevData => [...prevData, {"name": name, "admin": Cookies.get("loggedIn"), "desp": desp, "projectType":ptype}]);
     } catch (error) {
       console.log(error);
     }
@@ -102,6 +103,14 @@ const [ptype, setType] = useState("");
   const joinproject = async() =>{
     console.log(projectcode);
     setShowJoinClass(!showJoinClass);
+    try {
+      const a = Cookies.get("loggedIn");
+      console.log(a);
+      const res = await axios.post(`${url}/join-code`, {projectcode, a});
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -111,7 +120,7 @@ const [ptype, setType] = useState("");
         <div className={`sidebar ${isSidebarOpen ? '' : 'close'}`}>
           <div className="logo-details">
           <i class='bx bx-notepad'></i>
-            <span className="logo_name">TeachHive</span>
+            <span className="logo_name">TechHive</span>
           </div>
           <ul className="nav-links">
             <li>
@@ -121,7 +130,7 @@ const [ptype, setType] = useState("");
               </Link>
             </li>
             <li>
-              <Link to="#">
+              <Link to="/todo">
                 <i className="fas fa-calendar-check" />
                 <span className="navlink">To-do</span>
               </Link>
@@ -148,7 +157,7 @@ const [ptype, setType] = useState("");
               <button id='bx_menu' onClick={toggleSidebar}>
                 <i className="bx bx-menu"/>
               </button>
-              <span className="text">TeachHive</span>
+              <span className="text">TechHive</span>
             </div>
             <div className="menubar" style={{ display: "block" }}>
               <div className="icons">
@@ -180,12 +189,13 @@ const [ptype, setType] = useState("");
           </div>
 
           {/* home sub Routes */}
-          <div className=" flex w-full" >
+          <div className=" flex fex-row w-full" >
             <Routes>
                 <Route path="/project" element={<ProjectBox />} />
                 <Route path="/header" element={<Header />} />
                 <Route path="/project/*" element={<Work />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/todo" element={<Todo />} />
             </Routes>
           </div>
 
@@ -261,288 +271,3 @@ const [ptype, setType] = useState("");
 
 export default Home;
 
-
-
-
-// import React, { useState, useEffect } from 'react';
-// import axios from "axios";
-// import Cookies from 'js-cookie';
-
-
-// export const Home = () => {
-//   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-//   const [boxData, setBoxData] = useState([{
-//     "name":"school",
-//     "description": "nice word",
-//     "admin": "rohit",
-//     "projectType": "educatoin"
-//   },
-//   {
-//     "name":"office",
-//     "desp": "good work",
-//     "admin": "bicchu",
-//     "projectType": "finance"
-//   }
-// ]);
-
-// const [url, setUrl] = useState(process.env.REACT_APP_BACKEND_URL);
-
-//   useEffect(() => {
-//     const sidebarBtn = document.querySelector("#bx_menu");
-//     const sidebar = document.querySelector(".sidebar");
-
-
-//     // get box data from server
-//     const projectData = async () =>{
-//         try {
-//           const resp = await axios.post(`${url}/get-project-detail`);
-//           console.log(resp.data);
-//           setBoxData([...boxData, ...resp.data])
-//           console.log("data");
-//         } catch (error) {
-//           console.log(error);
-//         }
-//     }
-//     projectData();
-
-
-//     const toggleSidebar = () => {
-//       setIsSidebarOpen(!isSidebarOpen);
-//       sidebar.classList.toggle("close");
-//     };
-//     sidebarBtn.addEventListener("click", toggleSidebar);
-
-//     const profileBtn = document.querySelector('#user-btn');
-//     const profile = document.querySelector('.home-section .home-content .menubar .profile');
-//     profileBtn.onclick = () => {
-//       profile.classList.toggle('active');
-//     }
-
-//     const plusBtn = document.querySelector('#plus-btn');
-//     const pluss = document.querySelector('.home-section .home-content .plus');
-//     plusBtn.onclick = () => {
-//       pluss.classList.toggle('active');
-//     }
-
-//     // create class box
-//     const rateBtn = document.querySelector('#rate');
-//     const Create = document.querySelector('.createclass');
-//     const blur = document.querySelector('.page');
-//     rateBtn.onclick = () => {
-//       Create.classList.toggle('active');
-//       pluss.classList.toggle('active');
-//       blur.classList.toggle('active');
-//     }
-
-//     const cancelBtn = document.querySelector('#cancel-btn');
-//     cancelBtn.onclick = () => {
-//       Create.classList.toggle('active');
-//       blur.classList.toggle('active');
-//     }
-
-//     // box creation
-//     const createBtn = document.querySelector('#create');
-//     createBtn.onclick = () => {
-//       Create.classList.toggle('active');
-//       blur.classList.toggle('active');
-//       const createBox = async() =>{
-//         try {
-//           const res = await axios.post('/create-project', {});
-//           console.log(res);
-//         } catch (error) {
-//           console.log(error);
-//         }
-//       }
-//       // const flag_create = document.createElement('div');
-//       // flag_create.innerHTML = `<div id="flag"></div>`;
-//       // const contentDiv = document.querySelector('.content');
-//       // contentDiv.appendChild(flag_create);
-//       setBoxData([...boxData, {"name": "af", "admin": "sdf", "desp": "dsf"}]);
-//       console.log("done");
-//     }
-
-//     const joinBtn = document.querySelector('#join');
-//     const Join = document.querySelector('.joinclass');
-//     joinBtn.onclick = () => {
-//       Join.classList.toggle('active');
-//       pluss.classList.toggle('active');
-//       blur.classList.toggle('active');
-//       console.log(Cookies.get("loggedIn"));
-//     }
-
-//     const jcancelBtn = document.querySelector('#jcancel-btn');
-//     jcancelBtn.onclick = () => {
-//       Join.classList.toggle('active');
-//       blur.classList.toggle('active');
-//     }
-
-//     const joinBtn2 = document.querySelector('#join-btn');
-//     joinBtn2.onclick = () => {
-//       Join.classList.toggle('active');
-//       blur.classList.toggle('active');
-//       const newbox = document.createElement('div');
-//       newbox.innerHTML = `<div id="flag"></div>`;
-//       const contentDiv = document.querySelector('.content');
-//       contentDiv.appendChild(newbox);
-//     }
-
-//     return () => {
-//       // Cleanup: remove event listeners when component unmounts
-//       sidebarBtn.removeEventListener("click", toggleSidebar);
-//       profileBtn.onclick = null;
-//       plusBtn.onclick = null;
-//       rateBtn.onclick = null;
-//       cancelBtn.onclick = null;
-//       createBtn.onclick = null;
-//       joinBtn.onclick = null;
-//       jcancelBtn.onclick = null;
-//       joinBtn2.onclick = null;
-//     };
-//   }, [isSidebarOpen]);
-
-//   return (
-//     <>
-//       <div className="page">
-//         <div className={`sidebar ${isSidebarOpen ? '' : 'close'}`}>
-//           <div className="logo-details">
-//             <i className="bx bxl-c-plus-plus" />
-//             <span className="logo_name">TeachHive</span>
-//           </div>
-//           <ul className="nav-links">
-//             <li>
-//               <a href="#">
-//                 <i className="fas fa-home" />
-//                 <span className="navlink">Home</span>
-//               </a>
-//             </li>
-//             <li>
-//               <a href="#">
-//                 <i className="fas fa-calendar-check" />
-//                 <span className="navlink">To-do</span>
-//               </a>
-//             </li>
-//             <li>
-//               <a href="#">
-//                 <i className="fas fa-graduation-cap" />
-//                 <span className="navlink">All Project</span>
-//               </a>
-//             </li>
-//             <li>
-//               <a href="#">
-//                 <i className="fas fa-cog" />
-//                 <span className="navlink">Settings</span>
-//               </a>
-//             </li>
-//           </ul>
-//         </div>
-
-//         <section className="home-section">
-//           <div className="home-content" style={{ justifyContent: "space-between" }}>
-//             <div className="menu">
-//               <button id='bx_menu'>
-//                 <i className="bx bx-menu"/>
-//               </button>
-//               <span className="text">TeachHive</span>
-//             </div>
-//             <div className="menubar" style={{ display: "block" }}>
-//               <div className="icons">
-//                 <div id="plus-btn" className="fa fa-plus" />
-//                 <div id="user-btn" className="fas fa-user" />
-//                 <div
-//                   id="toggle-btn"
-//                   style={{ marginRight: "1rem" }}
-//                   className="fas fa-moon "
-//                 />
-//               </div>
-//               <div className="profile">
-//                 <img src="profile.jpeg" alt="" />
-//                 <h3>Rohit</h3>
-//                 <span>Student</span>
-//                 <div className="profile-btn">
-//                   <a href="profile.html">Profile</a>
-//                   <a href="logout">Logout</a>
-//                 </div>
-//               </div>
-//               <div className="plus">
-//                 <button id="join">Join</button>
-//                 <button id="rate">Create</button>
-//               </div>
-//             </div>
-//           </div>
-
-//           <div className="content" style={{ display: "flex" }}>
-//             {boxData.map((elem, index)=>(
-//               <div key={index} className="bg-neutral-600 w-1/6 h-[250px] m-5 rounded-lg p-4 flex flex-col justify-between">
-//                 <div className="mb-6 text-2xl border-b-2 border-black flex justify-center">{elem.name}</div>
-//                 <div> 
-//                   <p>admin: {elem.admin}</p>
-//                   <p>description: {elem.description}</p>
-//                 </div>
-//                 <div className="border-t-2 border-black justify-center align-bottom flex"> {elem.projectType} </div>
-//               </div>
-//             ))
-//             }
-//           </div>
-//         </section>
-//       </div>
-
-//       <div className="joinclass">
-//         <p>Join Project</p>
-//         <div className="form">
-//           <input
-//             type="text"
-//             name="projectcode"
-//             placeholder="Project code"
-//             id="projectcode"
-//             required=""
-//           />
-//           <br />
-//           <div className="joinbtn">
-//             <button id="jcancel-btn">cancel</button>
-//             <button id="join-btn">join</button>
-//           </div>
-//         </div>
-//       </div>
-
-//       <div className="createclass">
-//         <p>New Project</p>
-//         <div className="form">
-//           <input
-//             type="text"
-//             name="projectname"
-//             placeholder="Project Name"
-//             id="projectname"
-//             required=""
-//           />
-//           <br />
-//           <input
-//             type="text"
-//             name="description"
-//             placeholder="Description"
-//             id="Semester"
-//             required=""
-//           />
-//           <br />
-//           <select name="Project Type" id="projecttype" required="">
-//             <option value="">Project Type</option>
-//             <option value="visa">Software Development</option>
-//             <option value="rupay">Education</option>
-//             <option value="Marketing">Marketing</option>
-//             <option value="Design">Design</option>
-//             <option value="Personal">Personal</option>
-//             <option value="Product Management">Product Management</option>
-//             <option value="Human Resource">Human Resource</option>
-//             <option value="Finance">Finance</option>
-//           </select>
-//           <div className="create-btn">
-//             <button id="cancel-btn">cancel</button>
-//             <button id="create">create</button>
-//           </div>
-//         </div>
-//       </div>
-
-//     </>
-//   );
-// };
-
-// export default Home;

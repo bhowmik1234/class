@@ -98,6 +98,14 @@ app.post('/create-project', async(req, res)=>{
         });
 
         const saveProject = await newProject.save();
+        const addProjectId = await User.findOneAndUpdate(
+            {_id: currUser._id},
+            {
+                $push: {works: saveProject._id}   
+            },
+            {new: true}
+        )
+        console.log(addProjectId);
         res.json(saveProject);
     } catch (error) {
         console.log(error);
@@ -108,7 +116,13 @@ app.post('/create-project', async(req, res)=>{
 // get project detail
 app.post('/get-project-detail', async(req, res)=>{
     try {
-        const resp = await Project.find();
+        const reqBody = req.body;
+        const { a } = reqBody;
+        console.log(a, "thisone");
+        const userProject = await User.findOne({username: a});
+        console.log(userProject.works, "all");
+        const projectArray = userProject.works;
+        const resp = await Project.find({ _id: { $in: projectArray } });
         res.json(resp);
     } catch (error) {
         console.log(error);
@@ -155,11 +169,29 @@ app.post('/get-contact', async(req, res)=>{
     }
 })
 
+// join code
+app.post('/join-code', async(req, res)=>{
+    try {
+        const reqBody = req.body;
+        const { projectcode, a } = reqBody;
+        console.log(projectcode, a);
 
-
+        const project = await Project.findOne({code: projectcode});
+        console.log(project);
+        const user = await User.findOneAndUpdate(
+            {username: a},
+            { 
+                $push: {works: project._id}
+            },
+            {new: true}
+        )
+        console.log(user);
+        res.send("successfully join");
+    } catch (error) {
+        res.send("not able to join");
+    }
+})
 
 app.listen(process.env.PORT, ()=>{
     console.log(`App running in port ${process.env.PORT}.`);
 });
-
-
